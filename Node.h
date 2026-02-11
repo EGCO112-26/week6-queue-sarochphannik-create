@@ -6,46 +6,60 @@
 //
 #ifndef Node_h
 #define Node_h
+#include <string.h>
 
-struct node
-{
-    int data;
-    struct node *nextPtr;
-};
+typedef struct node{
+    struct node* next;
+    int order_number;
+    int price;
+    char menu[50];
+}order;
 
-typedef struct node Node;
-typedef struct node* NodePtr;
+typedef struct{
+    order *head, *tail;
+    int size;
+}Queue;
 
-void enqueue(NodePtr * head, NodePtr* tail, int x){
-  Node* new_node=(NodePtr) malloc(sizeof(Node));
-if(new_node){ 
-    new_node->data=x;
-    new_node->nextPtr=NULL;
-  /* Finish queue*/
-  if((*head)==NULL){// หัวแถว
-    *head=new_node;
-  }
-  else// ท้ายแถว
-    (*tail)->nextPtr=new_node;
-  
-  *tail=new_node;
-}
-}
+typedef order* OrderPtr;
 
-
-int dequeue(NodePtr* head, NodePtr* tail){
-  NodePtr t=*head;
-   if(t){
-   int value= t->data;
-        *head=t->nextPtr;
-        free(t);
-        if(*head==NULL) *tail=NULL;
-   
-       return value;
-   }
-   return 0;
+void enqueue(Queue* q, int order_num, const char* menu_item, int price){
+    OrderPtr new_order = (OrderPtr) malloc(sizeof(order));
+    if(new_order){
+        new_order->order_number = order_num;
+        new_order->price = price;
+        strcpy(new_order->menu, menu_item);
+        new_order->next = NULL;
+        
+        if(q->size == 0){
+            q->head = new_order;
+        }
+        else{
+            q->tail->next = new_order;
+        }
+        q->tail = new_order;
+        q->size++;
+    }
 }
 
+order dequeue(Queue* q){
+    order empty_order = {NULL, 0, 0, ""};
+    
+    if(q->size > 0){
+        OrderPtr temp = q->head;
+        order result = *temp;
+        q->head = temp->next;
+        q->size--;
+        if(q->size == 0) q->tail = NULL;
+        free(temp);
+        return result;
+    }
+    return empty_order;
+}
 
+void clearQueue(Queue* q){
+    while(q->size > 0){
+        dequeue(q);
+    }
+}
 
 #endif
