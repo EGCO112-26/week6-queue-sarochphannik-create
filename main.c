@@ -19,11 +19,16 @@ int main(int argc , char **argv) {
 
  for(i=1;i<argc;i++){
         if(strcmp(argv[i],"x")==0){
-            x=dequeue(&headPtr,&tailPtr);
-            printf("dequeing %d\n",x);
+            if(headPtr!=NULL){
+                x=dequeue(&headPtr,&tailPtr);
+                printf("dequeing %d\n",x);
+            }
+            else{
+                printf("Empty queue\n");
+            }
         }
         else {
-       enqueue_struct(&headPtr,&tailPtr, atoi(argv[i]));
+       enqueue(&headPtr,&tailPtr, atoi(argv[i]));
            
         }
  }
